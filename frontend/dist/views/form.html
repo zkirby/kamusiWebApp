@@ -1,0 +1,257 @@
+   <div id="form">
+    <div class="container">
+        <ol class="breadcrumb kamusi-breadcrumb col-sm-7" id="form_breadcrumb">
+            <li><a href="#" ui-sref="app"><b>Home</b></a></li>
+            <li class="active"><b>Restaurant</b></li>
+        </ol>         
+    </div>
+    <div class="container" ng-controller="RestaurantController">
+        <div class="row row-content">
+            <div class="col-xs-12 col-sm-9">
+                <form class="form-horizontal" role="form" name="menuForm" ng-submit="addElement(); menuForm.$setPristine();" novalidate>
+                    <h4>Add an element to the menu</h4>
+                    <!--Section-->
+                    <div class="form-group">
+                        <label for="section" class="col-xs-12 col-sm-2 control-label">Section</label>
+                        <div class="btn-group col-xs-12 col-sm-10" name="section">
+                            <label ng-repeat="section in model.sectionButtons" class="btn btn-kamusi btn-kamusi-clickable" ng-model="model.menuElem.section" uib-btn-radio="section.name" required>{{section.name}}</label>
+                            <button type="button" class="btn btn-action" ng-click="addSection()">+</button>
+                        </div>                         
+                    </div>
+                    <!--Subsection-->
+                    <div class="form-group" ng-if="model.menuElem.section">
+                        <label for='subsection' class='col-xs-12 col-sm-2 control-label'>Subsection</label>
+                        <div class="btn-group col-sm-10" name="subsection">
+                            <label ng-repeat="subsection in getSubsectionButtons()" class="btn btn-kamusi btn-kamusi-clickable" ng-model="model.menuElem.subsection" uib-btn-radio="subsection">{{subsection}}</label>
+                            <button type="button" class="btn btn-action"  ng-click="addSubsection()">+</button>
+
+                        </div>
+                           
+
+                    </div>
+                    <!--House name-->
+                    <div class="form-group" ng-if="model.menuElem.section" ng-clasng-class="{'has-error': menuForm.house_name.$error.required && !menuForm.house_name.$pristine}">
+                        <label for='house_name' class='col-xs-12 col-sm-2 control-label'>House name</label>
+                        <div class="col-sm-10">
+                            <input type='text' class='form-control' name='house_name' placeholder="Item house name (e.g. Bob's burger)" ng-model="model.menuElem.item.name" required>
+
+                        </div>
+                    </div>
+                    <!--Description-->
+                    <div class="form-group" ng-if="model.menuElem.item.name" ng-class="{'has-error': menuForm.description.$error.required && !menuForm.description.$pristine}">
+                        <label for="description" class="col-xs-12 col-sm-2 control-label">Description</label>
+                        <div class="col-sm-10">
+
+                            <textarea class="form-control" rows="3" placeholder="Description of the menu item." ng-model="model.menuElem.item.description" required></textarea>
+                        </div>
+                    </div>
+
+					<!--IngredientList; once the user validates it, it should be sent to the kamusi servers and come back a list of ingredients.
+                    This list should be used to populate autocomplete for the ingredients.-->
+                    <div class="form-group" ng-if="model.menuElem.item.description" ng-class="{'has-error': menuForm.ingredientArea.$error.required && !menuForm.ingredientArea.$pristine}">
+						<label for="ingredientArea" class="col-xs-12 col-sm-2 control-label">Ingredients</label>
+                        <div class="col-sm-10">
+
+							<textarea class="form-control" rows="3" placeholder="List ingredients separated by commas" ng-model="model.menuElem.item.ingredientArea" required></textarea>
+                            <button type='button' class='btn btn-action' ng-click="ingredientsFromTextArea()" ng-disabled="!model.menuElem.item.ingredientArea">Ok</button>
+                        </div>
+                    </div>
+                    
+                    <!--Ingredients -->
+                    <div class="form-group" ng-if="model.potentialIngredients.length > 0 || model.menuElem.item.ingredients.length > 0">
+                        <div class="col-sm-5 col-sm-offset-2">
+                            <div class="panel panel-default panel-kamusi">
+                                <div class="panel-heading">
+                                    Drag the terms you want
+                                </div>
+                                <div class="panel-body">
+                                    <ul class="droppable" dnd-list="model.potentialIngredients"
+                                      dnd-drop="addPotentialIngredient(item)">
+                                       <li class="btn btn-kamusi btn-kamusi-label"
+                                        ng-repeat="ingredient in model.potentialIngredients"
+                                        dnd-draggable="ingredient.name"
+                                        dnd-moved="model.potentialIngredients.splice($index, 1)"
+                                        dnd-effect-allowed="move">
+                                            {{ingredient.name}}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <label for="missing_term" class="control-label">Term missing?</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="missing_term" placeholder="Enter the missing term" ng-model="model.missing_term">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-kamusi btn-kamusi-last btn-kamusi-clickable" ng-click="addMissingTerm()">Add</button>
+                                </span>
+                            </div>
+                            
+
+                        </div>
+                        <div class="col-sm-5">
+                            <div class="panel panel-default panel-kamusi">
+                                <div class="panel-heading">
+                                    Drop the ingredients you want
+                                </div>
+                                <div class="panel-body">
+                                    <ul class="droppable" dnd-list="model.menuElem.item.ingredients"
+                                       dnd-drop="addIngredient(item)">
+                                        <div class="panel panel-default panel-kamusi" 
+                                          ng-if="model.menuElem.item.ingredients.length > 0" 
+                                          ng-repeat="ingredient in model.menuElem.item.ingredients"
+                                          dnd-draggable="ingredient.ingredient"
+                                          dnd-moved="model.menuElem.item.ingredients.splice($index, 1)"
+                                          dnd-effect-allowed="move">
+                                            <div class="panel-heading">
+                                                Drop the descriptives terms going with {{ingredient.ingredient}}
+                                            </div>
+                                            <div class="panel-body">
+                                                <ul class="droppable" dnd-list="ingredient.descriptives">
+                                                    <li class="btn btn-kamusi btn-kamusi-label" 
+                                                       ng-repeat="descriptive in ingredient.descriptives"
+                                                       dnd-draggable="descriptive"
+                                                       dnd-moved="ingredient.descriptives.splice($index, 1)"
+                                                       dnd-effect-allowed="move">
+                                                        {{descriptive}}
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                          <!--<li class="btn btn-kamusi btn-kamusi-label"
+                                           ng-repeat="ingredient in model.menuElem.item.ingredients">
+                                            {{ingredient.ingredient}}
+                                        </li>-->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Ingredients-->
+                    
+                    <!--<div class="form-group" ng-if="model.menuElem.item.ingredients.length > 0">
+                        <label for="ingredients" class="col-xs-12 col-sm-2 control-label">Ingredients</label>
+                        <div class="col-sm-10 pull-right" ng-repeat="ingredient in model.menuElem.item.ingredients">
+                            <div class="row">
+                               <div class="col-sm-6">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Ingredient (e.g. Beef, Carrots,...)" name="ingredient{{$index}}" ng-model="ingredient.ingredient" uib-typeahead="proposed.name for proposed in model.potentialIngredients | filter:$viewValue" typeahead-min-length="2" autocomplete="off" required>
+
+                                        <span class="input-group-btn" ng-if="!$last">
+                                            <button type="button" class="btn btn-danger" ng-click="removeIngredient($index)">x</button>
+                                        </span>
+                                        <span class="input-group-btn" ng-if="$last">
+                                            <button type="button" class="btn btn-action" ng-click="addIngredient()">+</button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                   <div class="input-group" ng-repeat="descriptive in ingredient.descriptives track by $index">
+                                       <input type="text" class="form-control" placeholder="Additional descriptive term (e.g. fried)" name="ingredient{{$parent.$index}}_descriptive{{$index}}" ng-model="model.menuElem.item.ingredients[$parent.$index].descriptives[$index]">
+                                       <span class="input-group-btn" ng-if="!$last">
+                                            <button type="button" class="btn btn-danger" ng-click="removeDescriptive($index, $parent.$parent.$index)">x</button>
+                                        </span>
+                                        <span class="input-group-btn" ng-if="$last">
+                                            <button type="button" class="btn btn-action" ng-click="addDescriptive($parent.$parent.$index)">+</button>
+                                        </span>
+                                   </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+                    
+                    <div ng-if="model.menuElem.item.ingredients.length > 0">
+                        <!--Number of people-->           
+                        <div class="form-group" >
+                            <label for="people" class="col-xs-12 col-sm-2 control-label">Number of people</label>
+                            <div class="btn-group col-xs-12 col-sm-10" name="people">
+                                <label class="btn btn-kamusi btn-kamusi-clickable" ng-model="model.menuElem.item.nbPeople" uib-btn-radio="1" required>1</label>
+                                <label class="btn btn-kamusi btn-kamusi-clickable" ng-model="model.menuElem.item.nbPeople" uib-btn-radio="2" required>2</label>
+                                <label class="btn btn-kamusi btn-kamusi-clickable" ng-model="model.menuElem.item.nbPeople" uib-btn-radio="3" required>3</label>
+                                <label class="btn btn-kamusi btn-kamusi-clickable" ng-model="model.menuElem.item.nbPeople" uib-btn-radio="4" required>4</label>
+                                <label class="btn btn-kamusi btn-kamusi-clickable btn-kamusi-last" ng-model="model.menuElem.item.nbPeople" uib-btn-radio="5" required>5+</label>                    
+                            </div>
+                        </div>
+                        <!--Special labels -->
+                        <div class="form-group">
+                            <label for="labels" class="col-xs-12 col-sm-2 control-label">Special labels</label>
+                            <div class="btn-group col-xs-12 col-sm-10" name="labels">
+                                <label ng-repeat="label in model.menuElem.item.labels" class="btn btn-kamusi btn-kamusi-clickable" ng-model="label.selected" ng-class="{'btn-kamusi-last': $last}" uib-btn-checkbox>{{label.name}}</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="meal" class="col-xs-12 col-sm-2 control-label">Meal</label>
+                            <div class="btn-group col-xs-12 col-sm-10" name="meal">
+                                <label class="btn btn-kamusi btn-kamusi-clickable" ng-model="model.menuElem.item.meal.breakfast" uib-btn-checkbox>Breakfast</label>
+                                <label class="btn btn-kamusi btn-kamusi-clickable" ng-model="model.menuElem.item.meal.brunch" uib-btn-checkbox>Brunch</label>
+                                <label class="btn btn-kamusi btn-kamusi-clickable" ng-model="model.menuElem.item.meal.lunch" uib-btn-checkbox>Lunch</label>
+                                <label class="btn btn-kamusi btn-kamusi-clickable" ng-model="model.menuElem.item.meal.earlybird" uib-btn-checkbox>Early Bird</label>
+                                <label class="btn btn-kamusi btn-kamusi-clickable" ng-model="model.menuElem.item.meal.happyhour" uib-btn-checkbox>Happy Hour</label>
+                                <label class="btn btn-kamusi btn-kamusi-clickable" ng-model="model.menuElem.item.meal.dinner" uib-btn-checkbox>Dinner</label>
+                                <label class="btn btn-kamusi btn-kamusi-clickable btn-kamusi-last" ng-model="model.menuElem.item.meal.latenight" uib-btn-checkbox>Late Night</label>            
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="day" class="col-xs-12 col-sm-2 control-label">Days available</label>
+                            <div class="btn-group col-xs-12 col-sm-10" name="day">
+                                <label class="btn btn-kamusi btn-kamusi-clickable" ng-model="model.menuElem.item.day.monday" uib-btn-checkbox>Monday</label>
+                                <label class="btn btn-kamusi btn-kamusi-clickable" ng-model="model.menuElem.item.day.tuesday" uib-btn-checkbox>Tuesday</label>
+                                <label class="btn btn-kamusi btn-kamusi-clickable" ng-model="model.menuElem.item.day.wednesday" uib-btn-checkbox>Wednesday</label>
+                                <label class="btn btn-kamusi btn-kamusi-clickable" ng-model="model.menuElem.item.day.thursday" uib-btn-checkbox>Thursday</label>
+                                <label class="btn btn-kamusi btn-kamusi-clickable" ng-model="model.menuElem.item.day.friday" uib-btn-checkbox>Friday</label>
+                                <label class="btn btn-kamusi btn-kamusi-clickable" ng-model="model.menuElem.item.day.saturday" uib-btn-checkbox>Saturday</label>
+                                <label class="btn btn-kamusi btn-kamusi-clickable btn-kamusi-last" ng-model="model.menuElem.item.day.sunday" uib-btn-checkbox>Sunday</label>
+                            </div>
+                        </div>
+                        <!--Inmage input-->
+                        <div class="form-group">
+                            <label for="image" class="col-xs-12 col-sm-2 control-label">Image</label>
+                            <div class="col-sm-10">
+                                <label class="btn btn-action import-file">
+                                    <input type="file" 
+                                    ngf-select 
+                                    ng-model="model.menuElem.item.image" 
+                                    name="image" 
+                                    id="image"   
+                                    accept="image/*" 
+                                    ngf-max-size="20MB" 
+                                    ngf-min-height="100" 
+                                    ngf-min-width="100" 
+                                    ngf-resize="{width: 300, height: 300, type: 'image/jpeg'}">Select
+                                </label>
+                                <br><img ngf-thumbnail="model.menuElem.item.image" class="thumb">
+                            </div>
+                            
+                        </div>
+                        <div class="form-group">
+                           <label for="add" class="col-xs-12 col-sm-2 control-label">Add this item to the menu</label>
+                            <div class="col-sm-2">
+                                <button type='submit' name="add" class="btn btn-action" ng-disabled="menuForm.$invalid">Add</button>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-xs-12 col-sm-3">
+                
+                <h3>Your Current Menu:</h3>
+                <div class="list-group">
+                    <div ng-repeat="section in model.menu">
+                       <a href="#" class="list-group-item disabled"><b>{{section.name}}</b></a>
+                        <div ng-repeat="sub in section.subsections"> 
+                            <a href="#" class="list-group-item disabled" ng-if="sub.name.length > 0">&nbsp;&nbsp;&nbsp;&nbsp;{{sub.name}}</a>
+                            <div ng-repeat="item in sub.items">
+                                <a href="#" class="list-group-item" ng-click="modifyElement(section.name, sub.name, item)">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;{{item.name}}
+                                </a>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <button type="button" class="btn btn-action" ng-click="submitMenu()">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+<div class="modal-header">
+    <h3 class="modal-title">Are you sure you're done ?</h3>
+</div>
+<div class="modal-body">
+    <h3>Your Current Menu:</h3>
+    <ul>
+        <li ng-repeat="section in model.menu">
+            <h4>{{section.name}}</h4>
+            <ul>
+                <li ng-repeat="sub in section.subsections">
+                    <h5>{{sub.name}}</h5>
+                    <ul>
+                        <li ng-repeat="item in sub.items">
+                            <h6>{{item.name}}</h6>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-action" type="button" ng-click="$close(true)">OK</button>
+    <button class="btn btn-warning" type="button" ng-click="$close(false)">Cancel</button>
+</div>

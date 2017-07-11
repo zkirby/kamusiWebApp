@@ -1,0 +1,15 @@
+<div class="modal-header">
+    <h3 class="modal-title">Choose the ingredients</h3>
+</div>
+<div class="modal-body">
+    <div class="form-horizontal">
+        <div class="form-group kamusi-modal">
+            <label ng-repeat="ingredient in model.potentialIngredients" class="btn btn-kamusi btn-kamusi-label" ng-model="ingredient.selected" uib-btn-checkbox>{{ingredient.name}}</label>
+            <!--<br><br><button type="button" class="btn btn-action" ng-click="">+</button>-->
+        </div>   
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-action" type="button" ng-click="$close(true)">OK</button>
+    <button class="btn btn-warning" type="button" ng-click="$close(false)">Cancel</button>
+</div>
