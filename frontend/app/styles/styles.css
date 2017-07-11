@@ -1,0 +1,111 @@
+body {
+    background-image: url("../images/kikoi.jpg");
+}
+
+#jumbotron {
+    opacity: 0.8;
+    background-color: #684235;
+    color: white;
+}
+
+.kamusi-breadcrumb {
+    background-image: url("../images/kikoi.jpg");
+}
+
+/*To have a custom import file button and not the default*/
+.import-file > input {
+    width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+/*Image thumbnail*/
+.thumb {
+    float: none;
+    position: relative;
+    top: 7px;
+}
+
+
+/*Custom button */
+ .btn.btn-kamusi {
+    background: #f3bb70;
+    border-color: transparent;
+    border-right-color: #684235;
+    border-left-color: #684235;
+}
+/*Necessary for the right border to show properly*/
+.btn.btn-kamusi:first-child{
+    border-left-color: transparent;
+}
+
+
+/*Color of a selected button*/
+.btn-kamusi-clickable:active, .btn-kamusi-clickable.active {
+    background: #e08204;
+    font-weight: bold;
+    }
+
+/*For the last button of an input group*/
+.btn.btn-kamusi.btn-kamusi-last {
+    border-right-color: transparent;
+}
+
+/*Borderless with a margin*/
+.btn.btn-kamusi.btn-kamusi-label {
+    border-color: transparent;
+    margin-right: 1em;
+}
+/* + buttons */
+.btn.btn-action {
+    color: white;
+    background: #684235;
+    border-color: transparent;
+}
+
+/*Margin for the modal*/
+.form-horizontal > .form-group.kamusi-modal {
+    margin-left: 2em;
+}
+
+/*This is the logo inside the jumbotron*/
+#kamusi-logo {
+    float: right;
+}
+
+/*Droppable list should have a minimum size to be able to drop in it even when it's empty*/
+.droppable {
+    min-height: 42px;
+    padding-left: 0px;
+}
+
+ul[dnd-list], ul[dnd-list] > li {
+    position: relative;
+}
+
+/**/
+.panel.panel-default.panel-kamusi > .panel-heading {
+    /*background-color: #f3bb70;*/
+    background-image: -webkit-linear-gradient(top, #f3bb70 0%, #ebb368 100%);
+    background-image:      -o-linear-gradient(top, #f3bb70 0%, #ebb368 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#f3bb70), to(#ebb368));
+    background-image:         linear-gradient(to bottom, #f3bb70 0%, #ebb368 100%);
+}
+
+ul[dnd-list] .dndDraggingSource {
+    display: none;
+}
+
+
+ul[dnd-list] .dndPlaceholder {
+    display: block;
+    background-color: #ddd;
+    min-height: 42px;
+}
+/*Reddish color for links, not used yet but saved here*/
+.colors {
+    background: #a50000
+}

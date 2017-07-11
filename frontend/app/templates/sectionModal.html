@@ -1,0 +1,11 @@
+<div class="modal-header">
+    <h3 class="modal-title">Add a section</h3>
+</div>
+<div class="modal-body">
+    <label for="newSection">Section name</label>
+    <input type="text" id="newSection" ng-model="newSection">
+</div>
+<div class="modal-footer">
+    <button class="btn btn-action" type="button" ng-click="$close(newSection)">OK</button>
+    <button class="btn btn-warning" type="button" ng-click="$close('')">Cancel</button>
+</div>

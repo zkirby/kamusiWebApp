@@ -1,0 +1,49 @@
+    <div class="container">
+        <ol class="breadcrumb kamusi-breadcrumb col-sm-7" id="home_breadcrumb">
+            <li class="active"><b>Home</b></li>
+        </ol>         
+    </div>
+    <div class="container" ng-controller="HomeController">
+        <div class="row row-content">
+            <form class="form-horizontal" role="form" name="homeForm"  novalidate>
+                <div class="form-group">
+                    <label for="restaurant" class="col-xs-12 col-sm-2 control-label">
+                        Restaurant Name
+                    </label>
+                    <div class="col-xs-12 col-sm-5">
+                        <input type="text" class="form-control" id="restaurant" placeholder="Enter the restaurant name" ng-model="model.restaurant_name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="adress" class="col-xs-12 col-sm-2 control-label">
+                        Address
+                    </label>
+                    <div class="col-xs-12 col-sm-5">
+                        <input type="text" class="form-control" id="address" placeholder="Enter the restaurant address" ng-model="model.restaurant_address">
+                    </div>
+                </div>
+				<div class="form-group">
+                    <label for="language" class="col-xs-12 col-sm-2 control-label">
+                        Language
+                    </label>
+                    <div type="text" class="col-xs-12 col-sm-5">
+                        <select type="text" class="form-control" id="language" ng-model="model.restaurant_language">
+							<option value="English">English</option>
+							<option value="French">French</option>
+							<option value="Spanish">Spanish</option>
+						</select>
+                    </div>
+                </div>
+                <div class="form-group">
+                   <label for="save" class="col-xs-12 col-sm-2 control-label">
+                       Save and continue
+                   </label>
+                    <div class="col-sm-2">
+                        <button type="button" id="save" class="btn btn-action" ui-sref="app.restaurant" ng-click="passnames(model.restaurant_name, model.restaurant_address, model.restaurant_language)">
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
