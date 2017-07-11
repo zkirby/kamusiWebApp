@@ -1,0 +1,26 @@
+{
+  "name": "webapp",
+  "version": "0.0.0",
+  "dependencies": {
+    "angular": "^1.4.0",
+    "bootstrap": "^3.2.0",
+    "angular-resource": "^1.4.0",
+    "angular-ui-router": "^0.2.18",
+    "ng-file-upload": "^12.0.4",
+    "angular-drag-and-drop-lists": "^1.4.0"
+  },
+  "devDependencies": {
+    "angular-ui-router": "^0.2.18"
+  },
+  "appPath": "app",
+  "moduleName": "webappApp",
+  "overrides": {
+    "bootstrap": {
+      "main": [
+        "less/bootstrap.less",
+        "dist/css/bootstrap.css",
+        "dist/js/bootstrap.js"
+      ]
+    }
+  }
+}
